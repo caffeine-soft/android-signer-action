@@ -17,11 +17,10 @@ jobs:
 
             - name: Create Release
               id: release
-              uses: caffeine-soft/github-release-tag@v1
+              uses: caffeine-soft/github-release-tag@v0
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   generate_release: "true"
-                  release_name: "Release {tag}"
 
             - name: Update Major Tag
               run: |
