@@ -29,7 +29,7 @@ jobs:
       # (Assume you have a step here that builds your APK/AAB into the 'app/build/outputs' directory)
 
       - name: Sign Android Release
-        uses: caffeine-soft/android-signer-action@v1
+        uses: caffeine-soft/android-signer-action@v0
         with:
           release_dir: 'app/build/outputs'
           signing_key: ${{ secrets.SIGNING_KEY }}
