@@ -1,0 +1,46 @@
+name: "Android Signer"
+description: "Signs an Android AAB/APK file using jarsigner"
+author: "caffeine-soft"
+branding:
+  icon: "shield"
+  color: "green"
+
+inputs:
+  release_dir:
+    description: "Directory containing the APK/AAB files to sign"
+    required: true
+  signing_key:
+    description: "Base64 encoded string of the keystore (jks or keystore file)"
+    required: true
+  alias:
+    description: "Key alias"
+    required: true
+  key_store_password:
+    description: "Password for the keystore"
+    required: true
+  key_password:
+    description: "Password for the key alias"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Decode Keystore
+      shell: bash
+      run: printf "%s" "${{ inputs.signing_key }}" | base64 -d > ${{ runner.temp }}/keystore.jks
+
+    - name: Sign APK/AAB files
+      shell: bash
+      run: |
+        for file in $(find ${{ inputs.release_dir }} -type f \( -name "*.apk" -o -name "*.aab" \)); do
+          echo "Signing $file..."
+          jarsigner -keystore ${{ runner.temp }}/keystore.jks \
+            -storepass "${{ inputs.key_store_password }}" \
+            -keypass "${{ inputs.key_password }}" \
+            "$file" "${{ inputs.alias }}"
+        done
+
+    - name: Clean up Keystore
+      if: always()
+      shell: bash
+      run: rm -f ${{ runner.temp }}/keystore.jks
