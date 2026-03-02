@@ -50,12 +50,25 @@ jobs:
 
 ## Preparing the `signing_key`
 
-You need to encode your `.jks` or `.keystore` file to Base64 to use it as a GitHub Secret:
+You need to encode your `.jks` or `.keystore` file to Base64 to use it as a GitHub Secret. Here are the commands depending on your operating system:
+
+### macOS
 
 ```sh
 base64 -i my-release-key.jks | pbcopy
-# Or on Linux:
+```
+
+### Linux
+
+```sh
+# You might need to install xclip first: sudo apt-get install xclip
 base64 -w 0 my-release-key.jks | xclip -selection clipboard
 ```
 
-Then add this copied string as a Repository Secret named `SIGNING_KEY`.
+### Windows (PowerShell)
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("my-release-key.jks")) | Set-Clipboard
+```
+
+Then add this copied string as a Repository Secret named `SIGNING_KEY` in your GitHub repository (`Settings` > `Secrets and variables` > `Actions`).
